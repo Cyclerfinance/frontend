@@ -9,9 +9,7 @@ export const StyledDashboard = styled.div`
     width: 520px;
     background-color: rgba(0,0,0,.33);
     text-align: justify;
-
-
-    .fractalize-button {
+    .Cycler-button {
         display: inline-block;
         border: none;
         padding: .8rem 1.4rem;
@@ -25,12 +23,10 @@ export const StyledDashboard = styled.div`
         text-align: center;
         -webkit-appearance: none;
         -moz-appearance: none;
-
         :hover, :focus {
             background: #000;
             color: #fff;
         }
-
         :disabled{
             background-color: #555;
             color: #f4f4f4;
@@ -38,7 +34,6 @@ export const StyledDashboard = styled.div`
             pointer-events: all !important;
         }
     }
-
     .dashboard-value {
         display: flex;
         flex-direction: row;

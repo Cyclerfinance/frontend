@@ -2,15 +2,15 @@ import * as React from 'react';
 import BigNumber from 'bignumber.js';
 // import Countdown from 'react-countdown';
 // import moment from 'moment';
-import { StyledDashboard } from './StyledDashboard'
+import { StyledDashboard } from './StyledDashboard'
 import {
     getTotalSupply,
-    getBalance,
+    getBalance,a
     // getLiquidityRemoveFee,
-    // getFractalizeCallerFee,
-    // getMinTokenForFractalize,
-    // getLastFractalize,
-    getFractalizeInterval,
+    // getCyclerCallerFee,
+    // getMinTokenForCycler,
+    // getLastCycler,
+    getCyclerInterval,
     getCurrentPoolAddress,
     getCurrentCycle,
     getTaxFee,
@@ -19,7 +19,7 @@ import {
     getBurnFee,
     getLockFee,
     getCycleLimit,
-} from '../util/fractalToken';
+} from '../util/CyclerToken';
 import { networkId } from '../util/config';
 
 BigNumber.config({
@@ -33,7 +33,7 @@ BigNumber.config({
 });
 
 const poolNames: any = {
-    "0x90a257C6E5C0d01820516A690F02911b59EfF92c": "FRCTL-ETH",
+// (TBD)   "0x90a257C6E5C0d01820516A690F02911b59EfF92c": "CYCL-ETH",
 }
 
 export default ({ address }: { address: string; }) => {
@@ -41,10 +41,10 @@ export default ({ address }: { address: string; }) => {
     const [totalSupply, setTotalSupply] = React.useState(new BigNumber(0));
     const [totalBurn, setTotalBurn] = React.useState(new BigNumber(0));
     // const [liquidityRemoveFee, setLiquidityRemoveFee] = React.useState(0);
-    // const [fractalizeCallerFee, setFractalizeCallerFee] = React.useState(0);
-    // const [minTokenForFractalize, setMinTokenForFractalize] = React.useState(new BigNumber(0));
-    const [timeToFractalize, setTimeToFractalize] = React.useState(1);
-    // const [lastFractalizeTimestamp, setLastFractalizeTimetamp] = React.useState(0);
+    // const [CyclerCallerFee, setCyclerCallerFee] = React.useState(0);
+    // const [minTokenForCycler, setMinTokenForCycler] = React.useState(new BigNumber(0));
+    const [timeToCycler, setTimeToCycler] = React.useState(1);
+    // const [lastCyclerTimestamp, setLastCyclerTimetamp] = React.useState(0);
     const [currentTargetPoolName, setCurrentTargetPoolName] = React.useState("");
     const [currentCycle, setCurrentCycle] = React.useState(0);
     const [currentTaxFee, setCurrentTaxFee] = React.useState(0);
@@ -55,19 +55,19 @@ export default ({ address }: { address: string; }) => {
     const [currentCycleLimit, setCurrentCycleLimit] = React.useState(0);
 
     const [timerID, setTimerID] = React.useState(0);
-    let fractalizeInterval = 0;
+    let CyclerInterval = 0;
 
     const fetchAllDataFromContract = React.useCallback(async (firstFlag = false) => {
         if (firstFlag) {
             // setLiquidityRemoveFee(await getLiquidityRemoveFee());
-            // setFractalizeCallerFee(await getFractalizeCallerFee());
-            // const minToken = await getMinTokenForFractalize();
+            // setCyclerCallerFee(await getCyclerCallerFee());
+            // const minToken = await getMinTokenForCycler();
             // if (minToken) {
-            //     setMinTokenForFractalize(minToken);
+            //     setMinTokenForCycler(minToken);
             // }
-            const interval = await getFractalizeInterval();
+            const interval = await getCyclerInterval();
             if (interval) {
-                fractalizeInterval = interval;
+               CyclerInterval = interval;
             }
         }
 
@@ -81,20 +81,20 @@ export default ({ address }: { address: string; }) => {
             setTokenBalance(bal);
         }
 
-        // const lastFractalize = await getLastFractalize();
-        // if (lastFractalize) {
-        //     const lastFractalizeTm = lastFractalize * 1000;
+        // const lastCycler = await getLastCycler();
+        // if (lastCycler) {
+        //     const lastCyclerTm = lastCycler * 1000;
         //     const now = moment().unix();
-        //     setLastFractalizeTimetamp(lastFractalizeTm);
-        //     if (lastFractalize + fractalizeInterval > now) {
-        //         setTimeToFractalize((lastFractalize + fractalizeInterval)*1000);
+        //     setLastCyclerTimetamp(lastCyclerTm);
+        //     if (lastCycler + CyclerInterval > now) {
+        //         setTimeToCycler((lastCycler + CyclerInterval)*1000);
         //     } else {
-        //         setTimeToFractalize(0);
+        //         setTimeToCycler(0);
         //     }
         // }
         let currentTargetPool = await getCurrentPoolAddress();
         if (currentTargetPool) {
-            setCurrentTargetPoolName(poolNames[currentTargetPool] || 'TBD');
+            setCurrentTargetPoolName(poolNames[currentTargetPool] || 'TBD');
         }
         const cycle = await getCurrentCycle();
         setCurrentCycle(cycle);
@@ -121,7 +121,7 @@ export default ({ address }: { address: string; }) => {
 
     React.useEffect(() => {
         if (address) {
-            if (timerID > 0) {
+            if (timerID > 0) {
                 clearInterval(timerID);
             }
             let tempTimerID: number = setInterval(async () => {
@@ -152,7 +152,7 @@ export default ({ address }: { address: string; }) => {
         )
     }
 
-    const renderValueWithData = (title: string, value: string | JSX.Element) => (
+    const renderValueWithData = (title: string, value: string | JSX.Element) => (
         <div className="dashboard-value">
             <div className="dashboard-value-title">
                 {title}
@@ -166,13 +166,13 @@ export default ({ address }: { address: string; }) => {
     return (
         <StyledDashboard>
             <div>
-                {renderValueWithData('Your Balance:', `${tokenBalance.toFormat(4)} FRCTL`)}
-                {renderValueWithData('FRCTL Supply:', `${totalSupply.toFormat(4)} FRCTL`)}
-                {renderValueWithData('FRCTL Burned:', `${totalBurn.toFormat(4)} FRCTL`)}
+                {renderValueWithData('Your Balance:', `${tokenBalance.toFormat(4)} CYCL`)}
+                {renderValueWithData('CYCL Supply:', `${totalSupply.toFormat(4)} CYCL`)}
+                {renderValueWithData('CYCL Burned:', `${totalBurn.toFormat(4)} CYCL`)}
                 {renderValueWithData('Target Pool:', `${currentTargetPoolName}`)}
                 {renderValueWithData('Current Cycle:', `${currentCycle} out of ${currentCycleLimit + 1}`)}
-                {/* {renderValueWithData('Last Fractalize:', `${lastFractalizeTimestamp ? moment(new Date(lastFractalizeTimestamp)).format("dddd, MMMM Do YYYY, h:mm:ss a") : ''}`)} */}
-                {/* {renderValueWithData('Fractalize available in:', timeToFractalize > 0 ? <Countdown date={timeToFractalize} renderer={renderer} /> : '0 Minutes')} */}
+                {/* {renderValueWithData('Last Cycler:', `${lastCyclerTimestamp ? moment(new Date(lastCyclerTimestamp)).format("dddd, MMMM Do YYYY, h:mm:ss a") : ''}`)} */}
+                {/* {renderValueWithData('Cycler available in:', timeToCycler > 0 ? <Countdown date={timeToCycler} renderer={renderer} /> : '0 Minutes')} */}
                 <hr />
                 {renderValueWithData('Tax Fee:', `${(currentTaxFee * 0.1)}%`)}
                 {renderValueWithData('Dev Fee:', `${(currentDevFee * 0.1)}%`)}
@@ -181,16 +181,15 @@ export default ({ address }: { address: string; }) => {
                 {renderValueWithData('TOTAL Current Tax:', `${(currentTotalTax * 0.1)}%`)}
             </div>
             <div style={{ textAlign: 'center' }}>
-                <a className="fractalize-button" href="https://telegram.me/collablandbot?start=rec57DdDrMS3Qlxex_-tpc" target="_blank">
+                <a className="Cycler-button" href="https://telegram.me/collablandbot?start=rec57DdDrMS3Qlxex_-tpc(TBD)" target="_blank">
                     FEE VOTE TG
                 </a>
             </div>
             <div style={{ textAlign: 'center' }}>
-                <a className="fractalize-button" href="https://www.dextools.io/app/uniswap/pair-explorer/0x90a257c6e5c0d01820516a690f02911b59eff92c" target="_blank">
+                <a className="Cycler-button" href="https://www.dextools.io/app/uniswap/pair-explorer/(TBD)" target="_blank">
                     DEX TOOLS
                 </a>
             </div>
         </StyledDashboard>
     );
 };
-
